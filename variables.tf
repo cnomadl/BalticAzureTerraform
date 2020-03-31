@@ -7,44 +7,21 @@
 ##############################################################################
 
 variable "resource_group" {
+  type = string
   description = "This is the name of the Azure resource group to be created"
   default = ""
 }
 
 variable "location" {
+  type = string
   description = "The region where the Azure resource is to be created"
-  default = "ukwest"
+  default = ""
 }
 
 # * Security
-variable "rdp_allow" {
-  description = "This is the network security rule to allow RDP connection to the VM"
-  default = [{
-    name = "Allow-RDP"
-    priority = "300"
-    direction = "Inbound"
-    access = "Allow"
-    protocol = "Tcp"
-    source_port_range = "*"
-    destination_port_range = "3389"
-    source_address_prefix = "*"
-    destination_address_prefix = "*"      
-  }]
-}
-
-variable "ssh_allow" {
-  description = "This is the network security rule to allow RDP connection to the VM"
-  default = [{
-    name = "Allow-SSH"
-    priority = "310"
-    direction = "Inbound"
-    access = "Allow"
-    protocol = "Tcp"
-    source_port_range = "*"
-    destination_port_range = "22"
-    source_address_prefix = "*"
-    destination_address_prefix = "*"      
-  }]
+variable "remote_port" {
+  description = "Remote TCP port to be used for access to VMs created via the NSG applied to the nics"
+  default = ""
 }
 
 # * Networking
@@ -63,9 +40,16 @@ variable "nb_public_ip" {
   default = "1"
 }
 
-variable "public_ip_address_allocation" {
+variable "allocation_method" {
+  type = string
   description = "Defines how an IP address is assigned. Options are Static or Dynamic"
-  default = "dynamic"
+  default = "Dynamic"
+}
+
+variable "enable_accelerated_networking" {
+  type = bool
+  description = "(Optional) Enable accelerated networking on the network interace"
+  default = false
 }
 
 # * Virtual Machine
@@ -75,59 +59,97 @@ variable "nb_instances" {
 }
 
 variable "vm_hostname" {
+  type = string
   description = "This is the name of the VM"
   default = ""
 }
 
 variable "vm_size" {
+  type = string
   description = "The size of the VM to deploy"
   default = "Standard_D2s_v3"
 }
 
 # * Operating System
 variable "vm_os_publisher" {
+  type = string
   description = "The name of the publisher of the image you want to deploy"
   default = ""
 }
 
 variable "vm_os_offer" {
+  type = string
     description = "The name of the offer you want to deploy. Ignored when vm_os_id or vm_os_simple are provided"
     default= ""
 }
 
 variable "vm_os_sku" {
+  type = string
   description = "The SKU of the image you want to deploy"
   default = ""
 }
 
 variable "vm_os_version" {
+  type = string
     description = "The version of the OS you want to deploy"
     default = "latest"
 }
 
 variable "vm_os_simple" {
+  type = string
     description = "Specify the OS you with to use to get the lates image e.g. WindowsServer, UbuntuServer, CentOS and Debian. DO NOT use this option if you are providing the publisher, offer and SKU or a custom image"
+    default = ""
 }
 
 variable "vm_os_id" {
-  description = "This is the resource ID of the image you with to depoy if useing a custom image. You MUST set is_custom_image to true"
+  type = string
+  description = "This is the resource ID of the image you with to depoy if using a custom image. You MUST set is_custom_image to true"
   default = ""
 }
 
-variable "is_custom_image" {
-    description = "Set this option to true if you are useing a custom image and use only in conjuction with vm_os_id"
+variable "is_windows_image" {
+  type = string
+    description = "Set this option to true if you are using a custom image and use only in conjuction with vm_os_id"
     default = "false"
 }
 
+variable "os_disk_type" {
+  type = string
+  description = ""
+  default = "Standard_LRS"
+}
 # * Diagnostics
 variable "boot_diagnostics" {
-    description = "Enable or disable boot diagnostics"
+  type = bool
+    description = "(Optional) Enable or disable boot diagnostics"
     default = "false"
 }
 
 variable "boot_diagnostics_sa_type" {
-    description = "Storage account type for boot diagnostics"
+  type = string
+    description = "(Optional) Storage account type for boot diagnostics"
     default = "Standard_LRS"
+}
+
+# Credentials
+variable "admin_username" {
+  type = string
+  description = "This is the VM admin username"
+}
+variable "admin_password" {
+  type = string
+  description = "This is the VM admin password"
+}
+
+#Tags
+variable "created_by" {
+  type = string
+  description = ""
+}
+
+variable "resource_usage" {
+  type = string
+  description = ""
 }
 
 
